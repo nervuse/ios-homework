@@ -17,7 +17,6 @@
 		F3444C3927C3D7E400E0E7D6 /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3444C3827C3D7E400E0E7D6 /* PostViewController.swift */; };
 		F3444C3B27C3D84F00E0E7D6 /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3444C3A27C3D84F00E0E7D6 /* InfoViewController.swift */; };
 		F3E14FA227CF645800DE0BDA /* ProfileHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E14FA127CF645800DE0BDA /* ProfileHeaderView.swift */; };
-
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,7 +32,6 @@
 		F3444C3827C3D7E400E0E7D6 /* PostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewController.swift; sourceTree = "<group>"; };
 		F3444C3A27C3D84F00E0E7D6 /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
 		F3E14FA127CF645800DE0BDA /* ProfileHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderView.swift; sourceTree = "<group>"; };
-
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,8 +81,8 @@
 		F3E14FA027CF643200DE0BDA /* Profile */ = {
 			isa = PBXGroup;
 			children = (
-				F3444C3627C3D6FF00E0E7D6 /* ProfileViewController.swift */,
 				F3E14FA127CF645800DE0BDA /* ProfileHeaderView.swift */,
+				F3444C3627C3D6FF00E0E7D6 /* ProfileViewController.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
