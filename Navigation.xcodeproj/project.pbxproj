@@ -16,6 +16,7 @@
 		F3444C3727C3D6FF00E0E7D6 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3444C3627C3D6FF00E0E7D6 /* ProfileViewController.swift */; };
 		F3444C3927C3D7E400E0E7D6 /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3444C3827C3D7E400E0E7D6 /* PostViewController.swift */; };
 		F3444C3B27C3D84F00E0E7D6 /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3444C3A27C3D84F00E0E7D6 /* InfoViewController.swift */; };
+		F39A8E3127E79F1B007A61C6 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39A8E3027E79F1B007A61C6 /* LoginViewController.swift */; };
 		F3E14FA227CF645800DE0BDA /* ProfileHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3E14FA127CF645800DE0BDA /* ProfileHeaderView.swift */; };
 /* End PBXBuildFile section */
 
@@ -31,6 +32,7 @@
 		F3444C3627C3D6FF00E0E7D6 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		F3444C3827C3D7E400E0E7D6 /* PostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewController.swift; sourceTree = "<group>"; };
 		F3444C3A27C3D84F00E0E7D6 /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
+		F39A8E3027E79F1B007A61C6 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		F3E14FA127CF645800DE0BDA /* ProfileHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -83,6 +85,7 @@
 			children = (
 				F3E14FA127CF645800DE0BDA /* ProfileHeaderView.swift */,
 				F3444C3627C3D6FF00E0E7D6 /* ProfileViewController.swift */,
+				F39A8E3027E79F1B007A61C6 /* LoginViewController.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -157,6 +160,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F39A8E3127E79F1B007A61C6 /* LoginViewController.swift in Sources */,
 				F3444C3727C3D6FF00E0E7D6 /* ProfileViewController.swift in Sources */,
 				F3444C3327C3D66400E0E7D6 /* TabBarController.swift in Sources */,
 				F3444C3927C3D7E400E0E7D6 /* PostViewController.swift in Sources */,
