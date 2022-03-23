@@ -32,6 +32,7 @@ class ProfileViewController: UIViewController {
         self.view.backgroundColor = .lightGray
         self.viewWillLayoutSubviews()
         self.setupView()
+        self.tapGesture()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -58,6 +59,11 @@ class ProfileViewController: UIViewController {
         self.heightConstraint = self.profileHV.heightAnchor.constraint(equalToConstant: 220)
 
         NSLayoutConstraint.activate([topConstraint, leaidingConstraint, trailingConstraint, self.heightConstraint].compactMap({ $0 }))
+    }
+
+    private func tapGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self.view, action: #selector(view.endEditing))
+        self.view.addGestureRecognizer(tapGesture)
     }
 }
 

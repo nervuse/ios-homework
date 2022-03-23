@@ -105,6 +105,8 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
         self.view.backgroundColor = .white
 
         setupConstraints()
+        setUpObserver()
+        tapGesture()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -114,9 +116,8 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
 
     private func setupConstraints() {
         self.view.addSubview(scrollView)
-        self.scrollView.addSubview(contentView)
-        self.contentView.addSubview(stackView)
-        self.contentView.addSubview(imageVK)
+        self.scrollView.addSubview(imageVK)
+        self.scrollView.addSubview(stackView)
         self.stackView.addArrangedSubview(textFieldStackView)
         self.stackView.addArrangedSubview(logInButton)
         self.textFieldStackView.addArrangedSubview(emailTextField)
@@ -127,45 +128,85 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
         let scrollViewLeftConstraint = self.scrollView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor)
         let scrollViewBottomConstraint = self.scrollView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
 
-
-        let contentViewTopConstraint = self.contentView.topAnchor.constraint(equalTo: self.scrollView.topAnchor)
-        let contentViewCenterXConstraint = self.contentView.centerXAnchor.constraint(equalTo: self.scrollView.centerXAnchor)
-        let contentViewRightConstraint = self.contentView.trailingAnchor.constraint(equalTo: self.scrollView.trailingAnchor)
-        let contentViewLeftConstraint = self.contentView.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor)
-        let contentViewBottomConstraint = self.contentView.bottomAnchor.constraint(equalTo: self.scrollView.bottomAnchor)
-
-
-        let stackViewTopConstraint = self.stackView.topAnchor.constraint(equalTo: self.imageVK.bottomAnchor, constant: 120)
-        let stackViewLeftConstraint = self.stackView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 16)
-        let stackViewRightConstraint = self.stackView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -16)
-        let stackViewBottomConstraint = self.stackView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -300)
-
-        NSLayoutConstraint.activate([scrollViewTopConstraint, scrollViewBottomConstraint, scrollViewRightConstraint, scrollViewLeftConstraint, contentViewTopConstraint, contentViewCenterXConstraint, contentViewRightConstraint, contentViewLeftConstraint, contentViewBottomConstraint, stackViewTopConstraint, stackViewLeftConstraint, stackViewRightConstraint, stackViewBottomConstraint])
-
-        let topImageConstraint = self.imageVK.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 120)
-        let centerXImageConstraint = self.imageVK.centerXAnchor.constraint(equalTo: self.contentView.centerXAnchor)
+        let centerXImageConstraint = self.imageVK.centerXAnchor.constraint(equalTo: self.scrollView.centerXAnchor)
+        let bottomImageConstraint = self.imageVK.bottomAnchor.constraint(equalTo: self.stackView.topAnchor, constant: -90)
         let widthImageConstraint = self.imageVK.widthAnchor.constraint(equalToConstant: 100)
         let heightImageConstraint = self.imageVK.heightAnchor.constraint(equalToConstant: 100)
 
-        let topTextFieldStackConstraint = self.textFieldStackView.topAnchor.constraint(equalTo: self.stackView.topAnchor)
+        let stackViewCenterYConstraint = self.stackView.centerYAnchor.constraint(equalTo: self.scrollView.centerYAnchor)
+        let stackViewCenterXConstraint = self.stackView.centerXAnchor.constraint(equalTo: self.scrollView.centerXAnchor)
+        let stackViewLeftConstraint = self.stackView.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor, constant: 16)
+        let stackViewRightConstraint = self.stackView.trailingAnchor.constraint(equalTo: self.scrollView.trailingAnchor, constant: -16)
+
+        NSLayoutConstraint.activate([scrollViewTopConstraint, scrollViewLeftConstraint, scrollViewRightConstraint, scrollViewBottomConstraint, centerXImageConstraint, bottomImageConstraint, widthImageConstraint, heightImageConstraint, stackViewCenterYConstraint, stackViewCenterXConstraint, stackViewLeftConstraint, stackViewRightConstraint])
+
         let leadingTextFieldStackConstraint = self.textFieldStackView.leftAnchor.constraint(equalTo: self.stackView.leftAnchor)
         let trailingTextFieldStackConstraint = self.textFieldStackView.rightAnchor.constraint(equalTo: self.stackView.rightAnchor)
-        let heightSTextFieldStackConstraint = self.textFieldStackView.heightAnchor.constraint(equalToConstant: 100)
+        let heightTextFieldStackConstraint = self.textFieldStackView.heightAnchor.constraint(equalToConstant: 100)
 
         let topButtonConstraint = self.logInButton.topAnchor.constraint(equalTo: self.textFieldStackView.bottomAnchor, constant: 16)
         let leadingButtonConstraint = self.logInButton.leadingAnchor.constraint(equalTo: self.stackView.leadingAnchor)
         let trailingButtonConstraint = self.logInButton.trailingAnchor.constraint(equalTo: self.stackView.trailingAnchor)
         let heightButtonConstraint = self.logInButton.heightAnchor.constraint(equalToConstant: 50)
 
-        NSLayoutConstraint.activate([topImageConstraint, centerXImageConstraint, widthImageConstraint, heightImageConstraint, topTextFieldStackConstraint, leadingTextFieldStackConstraint, trailingTextFieldStackConstraint, heightSTextFieldStackConstraint, topButtonConstraint, leadingButtonConstraint, trailingButtonConstraint, heightButtonConstraint])
+        NSLayoutConstraint.activate([leadingTextFieldStackConstraint, trailingTextFieldStackConstraint, heightTextFieldStackConstraint, topButtonConstraint, leadingButtonConstraint, trailingButtonConstraint, heightButtonConstraint])
 
         emailTextField.delegate = self
         passwordTextField.delegate = self
     }
 
-    @objc func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
+    private func tapGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self.view, action: #selector(view.endEditing))
+        self.view.addGestureRecognizer(tapGesture)
+    }
+
+    private func setUpObserver() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+
+    deinit {
+        removeKeyboardNotifications()
+    }
+
+    private func removeKeyboardNotifications() {
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardDidShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+
+    @objc private func keyboardWillShow(_ notification: Notification) {
+        guard let userInfo = notification.userInfo else {return}
+        guard let keyboardSize = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else {return}
+        let keyboardFrame = keyboardSize.cgRectValue
+        if self.view.frame.origin.y == 0 {
+            self.view.frame.origin.y -= getMoveableDistance(keyboarHeight: keyboardFrame.height)
+        }
+    }
+
+    @objc func keyboardWillHide() {
+        if self.view.frame.origin.y != 0 {
+            self.view.frame.origin.y = 0
+        }
+    }
+
+    private func getMoveableDistance(keyboarHeight : CGFloat) ->  CGFloat{
+        var y: CGFloat = 0.0
+        if let activeTF = getSelectedTextField() {
+            var tfMaxY = activeTF.frame.maxY
+            var containerView = activeTF.superview!
+            while containerView.frame.maxY != self.view.frame.maxY {
+                let contViewFrm = containerView.convert(activeTF.frame, to: containerView.superview)
+                tfMaxY = tfMaxY + contViewFrm.minY
+                containerView = containerView.superview!
+            }
+
+            let keyboardMinY = self.view.frame.height - keyboarHeight
+            if tfMaxY > keyboardMinY {
+                y = tfMaxY - keyboardMinY + 16
+            }
+        }
+
+        return y
     }
 
     @objc func tapLogInButton() {
@@ -185,3 +226,32 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
     }
 }
 
+extension LogInViewController {
+    func getSelectedTextField() -> UITextField? {
+
+        let totalTextFields = getTextFieldsInView(view: self.view)
+
+        for textField in totalTextFields {
+            if textField.isFirstResponder {
+                return textField
+            }
+        }
+
+        return nil
+    }
+
+    func getTextFieldsInView(view: UIView) -> [UITextField] {
+
+        var totalTextFields = [UITextField]()
+
+        for subview in view.subviews as [UIView] {
+            if let textField = subview as? UITextField {
+                totalTextFields += [textField]
+            } else {
+                totalTextFields += getTextFieldsInView(view: subview)
+            }
+        }
+
+        return totalTextFields
+    }
+}
