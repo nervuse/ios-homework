@@ -151,7 +151,7 @@ final class ProfileHeaderView: UIView, UITextFieldDelegate {
         let leadingConstraint = self.statusTextField.leadingAnchor.constraint(equalTo: self.labelsStackView.leadingAnchor)
         let trailingConstraint = self.statusTextField.trailingAnchor.constraint(equalTo: self.infoStackView.trailingAnchor)
         let heightTextFieldConstraint = self.statusTextField.heightAnchor.constraint(equalToConstant: 40)
-        self.buttonTopConstraint = self.showStatusButton.topAnchor.constraint(equalTo: self.statusTextField.bottomAnchor, constant: 20)
+        self.buttonTopConstraint = self.showStatusButton.topAnchor.constraint(equalTo: self.statusTextField.bottomAnchor, constant: 16)
 
         if self.statusTextField.isHidden {
             self.addSubview(self.statusTextField)
