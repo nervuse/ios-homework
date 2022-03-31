@@ -9,6 +9,15 @@ import UIKit
 
 class GestureViewController: UIViewController {
 
+    private lazy var myView: UIView = {
+        let view = UIView()
+        view.isHidden = true
+        view.alpha = 0
+        view.backgroundColor = .darkGray
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+        }()
+
     private lazy var avatar: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -17,7 +26,6 @@ class GestureViewController: UIViewController {
         imageView.layer.borderWidth = 3.0
         imageView.layer.borderColor = UIColor.white.cgColor
         imageView.layer.cornerRadius = 69.0
-
         imageView.isUserInteractionEnabled = true // игнорирует касание false
         imageView.clipsToBounds = true
         return imageView
@@ -45,7 +53,7 @@ class GestureViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor.darkGray.withAlphaComponent(0.0)
+  //      self.view.backgroundColor = UIColor.darkGray.withAlphaComponent(0.0)
 
         self.setupView()
         self.setupGesture()
@@ -58,8 +66,17 @@ class GestureViewController: UIViewController {
     }
 
     private func setupView() {
+        self.view.addSubview(myView)
         self.view.addSubview(avatar)
+        self.view.bringSubviewToFront(avatar)
         self.view.addSubview(cancelButton)
+
+        let centerXViewConstraint = self.myView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor)
+        let centerYViewConstraint = self.myView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor)
+        let widthConstraint = self.myView.widthAnchor.constraint(equalTo: self.view.widthAnchor)
+        let heightConstraint = self.myView.heightAnchor.constraint(equalTo: self.view.heightAnchor)
+
+        NSLayoutConstraint.activate([centerXViewConstraint, centerYViewConstraint, widthConstraint, heightConstraint])
 
         self.topImageConstreint = self.avatar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 16)
         self.leadingImageConstraint = self.avatar.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 16)
@@ -72,6 +89,7 @@ class GestureViewController: UIViewController {
         let trailingCancelButtonConstraint = self.cancelButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -16)
 
         NSLayoutConstraint.activate([topCancelButtonConstreint, trailingCancelButtonConstraint])
+
     }
 
     private func setupGesture() {
@@ -87,20 +105,30 @@ class GestureViewController: UIViewController {
 
         if self.isExpanded {
             self.cancelButton.isHidden = false
+            self.myView.isHidden = false
         }
 
-        NSLayoutConstraint.deactivate([self.topImageConstreint, self.leadingImageConstraint, self.widthImageConstraint, self.heightImageConstraint].compactMap( {$0} ))
+//        NSLayoutConstraint.deactivate([self.topImageConstreint, self.leadingImageConstraint, self.widthImageConstraint, self.heightImageConstraint].compactMap( {$0} ))
+//
+//        self.widthImageConstraint = self.avatar.widthAnchor.constraint(equalTo: self.view.widthAnchor)
+//        self.heightImageConstraint = self.avatar.heightAnchor.constraint(equalTo: self.view.widthAnchor)
+//        self.topImageConstreint = self.avatar.centerXAnchor.constraint(equalTo: self.view.centerXAnchor)
+//        self.leadingImageConstraint = self.avatar.centerYAnchor.constraint(equalTo: self.view.centerYAnchor)
+//
+//        NSLayoutConstraint.activate([self.topImageConstreint, self.leadingImageConstraint, self.widthImageConstraint, self.heightImageConstraint].compactMap( {$0} ))
 
-        self.widthImageConstraint = self.avatar.widthAnchor.constraint(equalTo: self.view.widthAnchor)
-        self.heightImageConstraint = self.avatar.heightAnchor.constraint(equalTo: self.view.widthAnchor)
-        self.topImageConstreint = self.avatar.centerXAnchor.constraint(equalTo: self.view.centerXAnchor)
-        self.leadingImageConstraint = self.avatar.centerYAnchor.constraint(equalTo: self.view.centerYAnchor)
+        NSLayoutConstraint.deactivate([ self.topImageConstreint, self.leadingImageConstraint].compactMap( {$0} ))
 
-        NSLayoutConstraint.activate([self.topImageConstreint, self.leadingImageConstraint, self.widthImageConstraint, self.heightImageConstraint].compactMap( {$0} ))
+        self.widthImageConstraint?.constant = self.isExpanded ? UIScreen.main.bounds.width : 138
+        self.heightImageConstraint?.constant = self.isExpanded ? UIScreen.main.bounds.width : 138
+        self.topImageConstreint?.constant = self.isExpanded ? avatar.center.x : 0
+        self.leadingImageConstraint?.constant = self.isExpanded ? 0 : 16
+
+        NSLayoutConstraint.activate([widthImageConstraint, heightImageConstraint, topImageConstreint, leadingImageConstraint].compactMap( {$0} ))
 
         UIView.animate(withDuration: 0.5) {
-     //       self.avatar.layer.cornerRadius = 0.0  //Задание под звездочкой
-            self.view.backgroundColor = .darkGray.withAlphaComponent(0.8)
+      //      self.avatar.layer.cornerRadius = 0.0  //Задание под звездочкой
+            self.myView.alpha = self.isExpanded ? 1 : 0
             self.view.layoutIfNeeded()
         } completion: { _ in
         }
@@ -116,7 +144,8 @@ class GestureViewController: UIViewController {
     @objc private func buttonPressed() {
 
         if self.isExpanded {
-            self.cancelButton.isHidden = true
+            self.cancelButton.isHidden = false
+            self.myView.isHidden = false
         }
 
         self.isExpanded.toggle()
@@ -137,8 +166,8 @@ class GestureViewController: UIViewController {
         }
 
         UIView.animate(withDuration: 0.5) {
-            self.view.backgroundColor = .darkGray.withAlphaComponent(0.0)
-  //          self.avatar.layer.cornerRadius = 69.0  //Задание под звездочкой
+            self.myView.alpha = self.isExpanded ? 1 : 0
+      //      self.avatar.layer.cornerRadius = 69.0  //Задание под звездочкой
             self.view.layoutIfNeeded()
         } completion: { _ in
         }
