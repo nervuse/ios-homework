@@ -38,6 +38,8 @@ class ProfileViewController: UIViewController {
 
     private var heightConstraint: NSLayoutConstraint?
 
+    private var isExpanded = true
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
@@ -49,11 +51,11 @@ class ProfileViewController: UIViewController {
 
         self.tableView.tableHeaderView = tableHeaderView
         setupProfileHeaderView()
-   //     collectionTableViewCellDidTapItem()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.tabBarController?.tabBar.isHidden = false
         self.navigationController?.navigationBar.isHidden = false
         }
 
@@ -61,11 +63,6 @@ class ProfileViewController: UIViewController {
         super.viewWillLayoutSubviews()
         updateHeaderViewHeight(for: tableView.tableHeaderView)
     }
-
-    //    private func collectionTableViewCellDidTapItem() {
-    //        let photoVC = PhotosViewController()
-    //        self.navigationController?.pushViewController(photoVC, animated: true)
-    //    }
 
     private func setupView() {
         self.view.addSubview(self.tableView)
@@ -128,19 +125,21 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
         if indexPath.section == 0 { 
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "PhotoCell", for: indexPath) as? PhotosTableViewCell else {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "DefaultCell", for: indexPath)
-
                 return cell
             }
+            
             cell.delegate = self
+            cell.selectionStyle = .none
             cell.layer.shouldRasterize = true
             cell.layer.rasterizationScale = UIScreen.main.scale
-
             return cell
         } else {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "PostCell", for: indexPath) as? PostTableViewCell else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "DefaultCell", for: indexPath)
             return cell
         }
+            cell.delegate = self
+            cell.selectionStyle = .none
             let article = self.dataSource[indexPath.row]
             let viewModel = PostTableViewCell.ViewModel(author: article.author, image: article.image, description: article.description,  likes: article.likes, views: article.views)
             cell.setup(with: viewModel)
@@ -154,7 +153,9 @@ extension ProfileViewController: ProfileHeaderViewProtocol {
     func buttonPressed(textFieldIsVisible: Bool, completion: @escaping () -> Void) {
         self.heightConstraint?.constant = textFieldIsVisible ? 250 : 220
 
-        tableView.reloadSections(IndexSet(0..<1), with: .automatic)
+        tableView.beginUpdates()
+        self.isExpanded = !textFieldIsVisible
+        tableView.endUpdates()
 
         UIView.animate(withDuration: 0.5, delay: 0.0) {
             self.view.layoutIfNeeded()
@@ -172,6 +173,44 @@ extension ProfileViewController: PhotosTableViewCellProtocol {
     }
 }
 
+extension ProfileViewController: PostTableViewCellProtocol {
+
+    func tapImageDelegate(cell: PostTableViewCell) {
+        let postFileController = PostFile()
+        guard let index = self.tableView.indexPath(for: cell)?.row else { return }
+        let indexPath = IndexPath(row: index, section: 1)
+        self.dataSource[indexPath.row].views += 1
+        let article = self.dataSource[indexPath.row]
+
+        let viewModel = PostFile.ViewModel(
+            author: article.author,
+            image: article.image,
+            description: article.description,
+            likes: article.likes,
+            views: article.views)
+
+        postFileController.setup(with: viewModel)
+        self.view.addSubview(postFileController)
+
+        postFileController.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            postFileController.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            postFileController.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            postFileController.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            postFileController.topAnchor.constraint(equalTo: view.topAnchor)
+        ])
+
+        self.tableView.reloadRows(at: [indexPath], with: .fade)
+    }
+
+    func tapLikesLabelDelegate(cell: PostTableViewCell) {
+        guard let index = self.tableView.indexPath(for: cell)?.row else { return }
+        let indexPath = IndexPath(row: index, section: 1)
+        self.dataSource[index].likes += 1
+        self.tableView.reloadRows(at: [indexPath], with: .fade)
+    }
+}
 
 
 

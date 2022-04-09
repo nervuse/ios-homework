@@ -1,19 +1,13 @@
 //
-//  PostTableViewCell.swift
+//  PostFile.swift
 //  Navigation
 //
-//  Created by elena on 24.03.2022.
+//  Created by elena on 09.04.2022.
 //
 
 import UIKit
 
-protocol PostTableViewCellProtocol: AnyObject {
-
-    func tapImageDelegate(cell: PostTableViewCell)
-    func tapLikesLabelDelegate(cell: PostTableViewCell)
-}
-
-class PostTableViewCell: UITableViewCell {
+class PostFile: UIView {
 
     struct ViewModel: ViewModelProtocol {
         let author: String
@@ -23,14 +17,18 @@ class PostTableViewCell: UITableViewCell {
         let views: Int
     }
 
-    weak var delegate: PostTableViewCellProtocol?
-
-    private var tapLikesLabelGestureRecognizer = UITapGestureRecognizer()
-    private var tapImageGestureRecognizer = UITapGestureRecognizer()
+    private lazy var myView: UIView = {
+        let view = UIView()
+        view.clipsToBounds = true
+        view.backgroundColor = .darkGray.withAlphaComponent(0.5)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
 
     private lazy var backView: UIView = {
         let view = UIView()
         view.clipsToBounds = true
+        view.backgroundColor = .white
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -79,9 +77,9 @@ class PostTableViewCell: UITableViewCell {
         let label = UILabel()
         label.backgroundColor = .clear
         label.font = UIFont.systemFont(ofSize: 16)
+        label.text = "Likes: "
         label.textColor = .black
-        label.setContentCompressionResistancePriority(UILayoutPriority(250), for: .vertical)
-        label.setContentHuggingPriority(UILayoutPriority(1), for: .horizontal)
+        label.setContentCompressionResistancePriority(UILayoutPriority(250), for: .horizontal)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -90,33 +88,36 @@ class PostTableViewCell: UITableViewCell {
         let label = UILabel()
         label.backgroundColor = .clear
         label.font = UIFont.systemFont(ofSize: 16)
+        label.text  = "Views: "
         label.textColor = .black
-        label.setContentCompressionResistancePriority(UILayoutPriority(250), for: .vertical)
+        label.setContentCompressionResistancePriority(UILayoutPriority(250), for: .horizontal)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    private lazy var cancelButton: UIButton = {
+        let button = UIButton()
+        let image = UIImage(named: "closes")
+        button.setBackgroundImage(image, for: .normal)
+        button.clipsToBounds = true
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
+        return button
+    }()
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         self.setupView()
-        self.setupGesture()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        self.authorLabel.text = nil
-        self.image.image = nil
-        self.descriptionLabel.text = nil
-        self.likesLabel.text = nil
-        self.viewsLabel.text = nil
-    }
-
     private func setupView() {
-        self.contentView.addSubview(self.backView)
+        self.addSubview(self.myView)
+        self.addSubview(self.cancelButton)
+        self.myView.addSubview(self.backView)
         self.backView.addSubview(self.authorLabel)
         self.backView.addSubview(self.image)
         self.backView.addSubview(self.descriptionLabel)
@@ -124,10 +125,14 @@ class PostTableViewCell: UITableViewCell {
         self.infoStack.addArrangedSubview(self.likesLabel)
         self.infoStack.addArrangedSubview(self.viewsLabel)
 
-        let topConstraint = self.backView.topAnchor.constraint(equalTo: self.contentView.topAnchor)
-        let leadingConstraint = self.backView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor)
-        let trailingConstraint = self.backView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor)
-        let bottomConstraint = self.backView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor)
+        let topConstraint = self.myView.topAnchor.constraint(equalTo: self.topAnchor)
+        let leadingConstraint = self.myView.leadingAnchor.constraint(equalTo: self.leadingAnchor)
+        let trailingConstraint = self.myView.trailingAnchor.constraint(equalTo: self.trailingAnchor)
+        let bottomConstraint = self.myView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+        let centerXBackViewConstraint = self.backView.centerXAnchor.constraint(equalTo: self.myView.centerXAnchor)
+        let centerYBackViewConstraint = self.backView.centerYAnchor.constraint(equalTo: self.myView.centerYAnchor)
+        let leadingBackViewConstraint = self.backView.leadingAnchor.constraint(equalTo: self.myView.leadingAnchor)
+        let trailingBackViewConstraint = self.backView.trailingAnchor.constraint(equalTo: self.myView.trailingAnchor)
         let topAuthorConstraint = self.authorLabel.topAnchor.constraint(equalTo: self.backView.topAnchor, constant: 16)
         let leadingAuthorConstraint = self.authorLabel.leadingAnchor.constraint(equalTo: self.backView.leadingAnchor, constant: 16)
         let trailingAuthorConstraint = self.authorLabel.trailingAnchor.constraint(equalTo: self.backView.trailingAnchor, constant: -16)
@@ -142,12 +147,18 @@ class PostTableViewCell: UITableViewCell {
         let leadingInfoStackConstraint = self.infoStack.leadingAnchor.constraint(equalTo: self.backView.leadingAnchor, constant: 16)
         let trailingInfoStackConstraint = self.infoStack.trailingAnchor.constraint(equalTo: self.backView.trailingAnchor, constant: -16)
         let bottomInfoStackConstraint = self.infoStack.bottomAnchor.constraint(equalTo: self.backView.bottomAnchor, constant: -16)
+        let topCancelButtonConstreint = self.cancelButton.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 16)
+        let trailingCancelButtonConstraint = self.cancelButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16)
 
-        NSLayoutConstraint.activate([topConstraint, leadingConstraint, trailingConstraint, bottomConstraint, topAuthorConstraint, leadingAuthorConstraint, trailingAuthorConstraint, topImageConstraint, leadingImageConstraint, trailinaImageConstraint, heightImageConstraint, topDescriptionConstraint, leadingDescriptionConstraint, trailingDescriptionConstraint, topInfoStackConstraint, leadingInfoStackConstraint, trailingInfoStackConstraint, bottomInfoStackConstraint])
+        NSLayoutConstraint.activate([topConstraint, leadingConstraint, trailingConstraint, bottomConstraint, centerXBackViewConstraint, centerYBackViewConstraint, leadingBackViewConstraint, trailingBackViewConstraint, topAuthorConstraint, leadingAuthorConstraint, trailingAuthorConstraint, topImageConstraint, leadingImageConstraint, trailinaImageConstraint, heightImageConstraint, topDescriptionConstraint, leadingDescriptionConstraint, trailingDescriptionConstraint, topInfoStackConstraint, leadingInfoStackConstraint, trailingInfoStackConstraint, bottomInfoStackConstraint, topCancelButtonConstreint, trailingCancelButtonConstraint])
+    }
+
+    @objc private func buttonPressed() {
+        removeFromSuperview()
     }
 }
 
-extension PostTableViewCell: Setupable {
+extension PostFile: Setupable {
 
     func setup(with viewModel: ViewModelProtocol) {
         guard let viewModel = viewModel as? ViewModel else { return }
@@ -159,28 +170,3 @@ extension PostTableViewCell: Setupable {
         self.viewsLabel.text = "Views: " + String(viewModel.views)
     }
 }
-
-extension PostTableViewCell {
-
-    private func setupGesture() {
-        self.tapLikesLabelGestureRecognizer.addTarget(self, action: #selector(self.likesHandleGesture(_:)))
-        self.likesLabel.addGestureRecognizer(self.tapLikesLabelGestureRecognizer)
-        self.likesLabel.isUserInteractionEnabled = true
-
-        self.tapImageGestureRecognizer.addTarget(self, action: #selector(self.ImageHandleGesture(_:)))
-        self.image.addGestureRecognizer(self.tapImageGestureRecognizer)
-        self.image.isUserInteractionEnabled = true
-    }
-
-
-    @objc func likesHandleGesture(_ gestureRecognizer: UITapGestureRecognizer) {
-        guard self.tapLikesLabelGestureRecognizer === gestureRecognizer else { return }
-        delegate?.tapLikesLabelDelegate(cell: self)
-    }
-
-    @objc func ImageHandleGesture(_ gestureRecognizer: UITapGestureRecognizer) {
-        guard self.tapImageGestureRecognizer === gestureRecognizer else { return }
-        delegate?.tapImageDelegate(cell: self)
-    }
-}
-

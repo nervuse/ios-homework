@@ -13,8 +13,8 @@ struct Post: Decodable {
         let author: String
         let image: String
         let description: String
-        let likes: Int
-        let views: Int
+        var likes: Int
+        var views: Int
 
         enum CodingKeys: String, CodingKey {
             case author, description, image, likes, views

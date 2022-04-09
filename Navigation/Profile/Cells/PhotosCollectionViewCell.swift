@@ -9,6 +9,10 @@ import UIKit
 
 class PhotosCollectionViewCell: UICollectionViewCell {
 
+    struct ViewModel: ViewModelProtocol {
+        var image: String
+    }
+
     lazy var photoView: UIImageView = {
         let photo = UIImageView()
         photo.translatesAutoresizingMaskIntoConstraints = false
@@ -36,5 +40,13 @@ class PhotosCollectionViewCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         self.photoView.image = nil
+    }
+}
+
+extension PhotosCollectionViewCell: Setupable {
+
+    func setup(with viewModel: ViewModelProtocol) {
+        guard let viewModel = viewModel as? ViewModel else { return }
+        self.photoView.image = UIImage(named: viewModel.image)
     }
 }
