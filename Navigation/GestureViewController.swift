@@ -23,8 +23,7 @@ class GestureViewController: UIViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         let image = UIImage(named: "котик")
         imageView.image = image
-        imageView.layer.borderWidth = 3.0
-        imageView.layer.borderColor = UIColor.white.cgColor
+        imageView.contentMode = .scaleAspectFit
         imageView.layer.cornerRadius = 69.0
         imageView.isUserInteractionEnabled = true // игнорирует касание false
         imageView.clipsToBounds = true
@@ -59,12 +58,6 @@ class GestureViewController: UIViewController {
         self.setupGesture()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.navigationController?.navigationBar.prefersLargeTitles = false
-        self.navigationItem.title = "Жесты"
-    }
-
     private func setupView() {
         self.view.addSubview(myView)
         self.view.addSubview(avatar)
@@ -78,8 +71,8 @@ class GestureViewController: UIViewController {
 
         NSLayoutConstraint.activate([centerXViewConstraint, centerYViewConstraint, widthConstraint, heightConstraint])
 
-        self.topImageConstreint = self.avatar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 16)
-        self.leadingImageConstraint = self.avatar.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 16)
+        self.topImageConstreint = self.avatar.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 30)
+        self.leadingImageConstraint = self.avatar.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 16)
         self.widthImageConstraint = self.avatar.widthAnchor.constraint(equalToConstant: 138)
         self.heightImageConstraint = self.avatar.heightAnchor.constraint(equalToConstant: 138)
 
@@ -117,18 +110,14 @@ class GestureViewController: UIViewController {
 //
 //        NSLayoutConstraint.activate([self.topImageConstreint, self.leadingImageConstraint, self.widthImageConstraint, self.heightImageConstraint].compactMap( {$0} ))
 
+        self.heightImageConstraint?.constant = self.isExpanded ? self.view.bounds.height : 138
+        self.widthImageConstraint?.constant = self.isExpanded ? self.view.bounds.width : 138
+
         NSLayoutConstraint.deactivate([ self.topImageConstreint, self.leadingImageConstraint].compactMap( {$0} ))
-
-        self.widthImageConstraint?.constant = self.isExpanded ? UIScreen.main.bounds.width : 138
-        self.heightImageConstraint?.constant = self.isExpanded ? UIScreen.main.bounds.width : 138
-        self.topImageConstreint?.constant = self.isExpanded ? avatar.center.x : 0
-        self.leadingImageConstraint?.constant = self.isExpanded ? 0 : 16
-
-        NSLayoutConstraint.activate([widthImageConstraint, heightImageConstraint, topImageConstreint, leadingImageConstraint].compactMap( {$0} ))
 
         UIView.animate(withDuration: 0.5) {
       //      self.avatar.layer.cornerRadius = 0.0  //Задание под звездочкой
-            self.myView.alpha = self.isExpanded ? 1 : 0
+            self.myView.alpha = self.isExpanded ? 0.5 : 0
             self.view.layoutIfNeeded()
         } completion: { _ in
         }
@@ -154,8 +143,8 @@ class GestureViewController: UIViewController {
 
             self.widthImageConstraint = self.avatar.widthAnchor.constraint(equalToConstant: 138)
             self.heightImageConstraint = self.avatar.heightAnchor.constraint(equalToConstant: 138)
-            self.topImageConstreint = self.avatar.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 16)
-            self.leadingImageConstraint = self.avatar.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: 16)
+            self.topImageConstreint = self.avatar.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 30)
+            self.leadingImageConstraint = self.avatar.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 16)
 
         NSLayoutConstraint.activate([self.topImageConstreint, self.leadingImageConstraint, self.widthImageConstraint, self.heightImageConstraint].compactMap( {$0} ))
 
@@ -166,7 +155,7 @@ class GestureViewController: UIViewController {
         }
 
         UIView.animate(withDuration: 0.5) {
-            self.myView.alpha = self.isExpanded ? 1 : 0
+            self.myView.alpha = self.isExpanded ? 0.5 : 0
       //      self.avatar.layer.cornerRadius = 69.0  //Задание под звездочкой
             self.view.layoutIfNeeded()
         } completion: { _ in
