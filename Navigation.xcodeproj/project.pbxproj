@@ -17,6 +17,7 @@
 		F3444C3927C3D7E400E0E7D6 /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3444C3827C3D7E400E0E7D6 /* PostViewController.swift */; };
 		F3444C3B27C3D84F00E0E7D6 /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3444C3A27C3D84F00E0E7D6 /* InfoViewController.swift */; };
 		F39A8E3127E79F1B007A61C6 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39A8E3027E79F1B007A61C6 /* LoginViewController.swift */; };
+		F3A60C0628086D580053F35F /* GestureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3A60C0528086D580053F35F /* GestureViewController.swift */; };
 		F3B9EE6C27EC919400FF3B58 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3B9EE6B27EC919400FF3B58 /* Post.swift */; };
 		F3B9EE7027EC928300FF3B58 /* post.json in Resources */ = {isa = PBXBuildFile; fileRef = F3B9EE6F27EC928300FF3B58 /* post.json */; };
 		F3B9EE7227EC982600FF3B58 /* PhotosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3B9EE7127EC982600FF3B58 /* PhotosViewController.swift */; };
@@ -46,6 +47,7 @@
 		F3444C3827C3D7E400E0E7D6 /* PostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewController.swift; sourceTree = "<group>"; };
 		F3444C3A27C3D84F00E0E7D6 /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
 		F39A8E3027E79F1B007A61C6 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		F3A60C0528086D580053F35F /* GestureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestureViewController.swift; sourceTree = "<group>"; };
 		F3B9EE6B27EC919400FF3B58 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		F3B9EE6F27EC928300FF3B58 /* post.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = post.json; sourceTree = "<group>"; };
 		F3B9EE7127EC982600FF3B58 /* PhotosViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosViewController.swift; sourceTree = "<group>"; };
@@ -156,6 +158,7 @@
 				F3444C3627C3D6FF00E0E7D6 /* ProfileViewController.swift */,
 				F39A8E3027E79F1B007A61C6 /* LoginViewController.swift */,
 				F3B9EE7127EC982600FF3B58 /* PhotosViewController.swift */,
+				F3A60C0528086D580053F35F /* GestureViewController.swift */,
 				F3B9EE7327EC985B00FF3B58 /* Cells */,
 			);
 			path = Profile;
@@ -244,6 +247,7 @@
 				F305C81D27BBDEB7004F6582 /* AppDelegate.swift in Sources */,
 				F3C3A7032801EBA100C3CC23 /* PostFile.swift in Sources */,
 				F3444C3B27C3D84F00E0E7D6 /* InfoViewController.swift in Sources */,
+				F3A60C0628086D580053F35F /* GestureViewController.swift in Sources */,
 				F3C3A6FD2801E89000C3CC23 /* UIAlertController.swift in Sources */,
 				F305C81F27BBDEB7004F6582 /* SceneDelegate.swift in Sources */,
 				F3E14FA227CF645800DE0BDA /* ProfileHeaderView.swift in Sources */,
