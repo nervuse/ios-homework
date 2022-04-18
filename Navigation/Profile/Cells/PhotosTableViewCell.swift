@@ -95,10 +95,10 @@ class PhotosTableViewCell: UITableViewCell {
         self.infoStack.addArrangedSubview(infoButton)
         self.photoView.addSubview(photoCollectionView)
 
-        let topPhotoViewConstraint = self.photoView.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 25)
+        let topPhotoViewConstraint = self.photoView.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 16)
         let leadingPhotoViewConstraint = self.photoView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor)
         let trailingPhotoViewConstraint = self.photoView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor)
-        let bottomPhotoViewConstraint = self.photoView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -10)
+        let bottomPhotoViewConstraint = self.photoView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor)
         let topInfoStackConstraint = self.infoStack.topAnchor.constraint(equalTo: self.photoView.topAnchor, constant: 12)
         let leadingInfoStackConstraint = self.infoStack.leadingAnchor.constraint(equalTo: self.photoView.leadingAnchor, constant: 12)
         let trailingInfoStackConstraint = self.infoStack.trailingAnchor.constraint(equalTo: self.photoView.trailingAnchor, constant: -12)
@@ -106,7 +106,7 @@ class PhotosTableViewCell: UITableViewCell {
         let topPhotoConstraint = self.photoCollectionView.topAnchor.constraint(equalTo: self.infoStack.bottomAnchor)
         let leadingPhotoConstraint = self.photoCollectionView.leadingAnchor.constraint(equalTo: self.photoView.leadingAnchor, constant: 12)
         let trailingPhotoConstraint = self.photoCollectionView.trailingAnchor.constraint(equalTo: self.photoView.trailingAnchor, constant: -12)
-        let bottomPhotoConstraint = self.photoCollectionView.bottomAnchor.constraint(equalTo: self.photoView.bottomAnchor)
+        let bottomPhotoConstraint = self.photoCollectionView.bottomAnchor.constraint(equalTo: self.photoView.bottomAnchor, constant: -12)
         let heightPhotoConstraint = self.photoCollectionView.heightAnchor.constraint(equalTo: self.photoView.widthAnchor, multiplier: 0.25)
 
         NSLayoutConstraint.activate([topPhotoViewConstraint, leadingPhotoViewConstraint, trailingPhotoViewConstraint, bottomPhotoViewConstraint, topInfoStackConstraint, leadingInfoStackConstraint, trailingInfoStackConstraint, infoButtonHeightConstraint, topPhotoConstraint, leadingPhotoConstraint, trailingPhotoConstraint, bottomPhotoConstraint, heightPhotoConstraint])

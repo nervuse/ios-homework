@@ -16,7 +16,7 @@ class ProfileViewController: UIViewController {
     private var dataSource: [Post.Article] = []
     
     private lazy var tableView: UITableView = {
-        let tableView = UITableView()
+        let tableView = UITableView(frame: .zero, style: .grouped)
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 44
         tableView.dataSource = self
@@ -24,21 +24,11 @@ class ProfileViewController: UIViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "DefaultCell")
         tableView.register(PostTableViewCell.self, forCellReuseIdentifier: "PostCell")
         tableView.register(PhotosTableViewCell.self, forCellReuseIdentifier: "PhotoCell")
+        tableView.register(ProfileHeaderView.self, forHeaderFooterViewReuseIdentifier: "TableHederView")
         tableView.backgroundColor = .systemGray6
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
-
-    private lazy var tableHeaderView: ProfileHeaderView = {
-        let view = ProfileHeaderView(frame: .zero)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.delegate = self
-        return view
-        }()
-
-    private var heightConstraint: NSLayoutConstraint?
-
-    private var isExpanded = true
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,21 +38,13 @@ class ProfileViewController: UIViewController {
             self?.dataSource = articles
             self?.tableView.reloadData()
         }
-
-        self.tableView.tableHeaderView = tableHeaderView
-        setupProfileHeaderView()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.tabBar.isHidden = false
-        self.navigationController?.navigationBar.isHidden = false
+        self.navigationController?.navigationBar.isHidden = true
         }
-
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        updateHeaderViewHeight(for: tableView.tableHeaderView)
-    }
 
     private func setupView() {
         self.view.addSubview(self.tableView)
@@ -73,18 +55,6 @@ class ProfileViewController: UIViewController {
         let bottomTableViewConstraint = self.tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
 
         NSLayoutConstraint.activate([topTableViewConstraint, leadingTableViewConstraint, trailingTableViewConstraint, bottomTableViewConstraint])
-    }
-
-    private func setupProfileHeaderView() {
-        self.view.backgroundColor = .lightGray
-        let topConstraint = self.tableHeaderView.topAnchor.constraint(equalTo: tableView.topAnchor)
-        let leaidingConstraint = self.tableHeaderView.leadingAnchor.constraint(equalTo: tableView.leadingAnchor)
-        let trailingConstraint = self.tableHeaderView.trailingAnchor.constraint(equalTo: tableView.trailingAnchor)
-        let widthConstraint = self.tableHeaderView.widthAnchor.constraint(equalTo: tableView.widthAnchor)
-        self.heightConstraint = self.tableHeaderView.heightAnchor.constraint(equalToConstant: 220)
-        let bottomConstraint = self.tableHeaderView.bottomAnchor.constraint(equalTo: tableView.bottomAnchor)
-
-        NSLayoutConstraint.activate([topConstraint, leaidingConstraint, trailingConstraint, widthConstraint, heightConstraint, bottomConstraint].compactMap({ $0 }))
     }
 
     private func fetchArticles(completion: @escaping ([Post.Article]) -> Void) {
@@ -101,14 +71,22 @@ class ProfileViewController: UIViewController {
              fatalError("Invalid filename/path.")
         }
     }
-
-    private func updateHeaderViewHeight(for header: UIView?) {
-        guard let header = header else { return }
-        header.frame.size.height = header.systemLayoutSizeFitting(CGSize(width: view.bounds.width, height: CGFloat(heightConstraint!.constant))).height
-    }
 }
 
 extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let view = tableView.dequeueReusableHeaderFooterView(withIdentifier: "TableHederView") as! ProfileHeaderView
+        return view
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if section == 0 {
+            return 250
+        } else {
+            return 0
+        }
+    }
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
@@ -122,7 +100,7 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 0 { 
+        if indexPath.section == 0 {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "PhotoCell", for: indexPath) as? PhotosTableViewCell else {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "DefaultCell", for: indexPath)
                 return cell
@@ -144,23 +122,6 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
             let viewModel = PostTableViewCell.ViewModel(author: article.author, image: article.image, description: article.description,  likes: article.likes, views: article.views)
             cell.setup(with: viewModel)
             return cell
-        }
-    }
-}
-
-extension ProfileViewController: ProfileHeaderViewProtocol {
-
-    func buttonPressed(textFieldIsVisible: Bool, completion: @escaping () -> Void) {
-        self.heightConstraint?.constant = textFieldIsVisible ? 250 : 220
-
-        tableView.beginUpdates()
-        self.isExpanded = !textFieldIsVisible
-        tableView.endUpdates()
-
-        UIView.animate(withDuration: 0.5, delay: 0.0) {
-            self.view.layoutIfNeeded()
-        } completion: { _ in
-            completion()
         }
     }
 }
