@@ -7,19 +7,7 @@
 
 import UIKit
 
-struct Item {
-    var imageName: String
-}
-
 class PhotosViewController: UIViewController {
-
-    private var items: [Item] = [Item(imageName: "1"), Item(imageName: "2"), Item(imageName: "3"),
-                                 Item(imageName: "4"), Item(imageName: "5"), Item(imageName: "6"),
-                                 Item(imageName: "7"), Item(imageName: "8"), Item(imageName: "9"),
-                                 Item(imageName: "10"), Item(imageName: "11"), Item(imageName: "12"),
-                                 Item(imageName: "13"), Item(imageName: "14"), Item(imageName: "15"),
-                                 Item(imageName: "16"), Item(imageName: "17"), Item(imageName: "18"),
-                                 Item(imageName: "19"), Item(imageName: "20")]
 
     private enum Constants {
         static let itemCount: CGFloat = 3
@@ -44,7 +32,6 @@ class PhotosViewController: UIViewController {
     }()
 
     private func itemSize(for width: CGFloat, with spacing: CGFloat) -> CGSize {
-        //3 элемента в ряду и 2 spacing
         let neededWidth = width - 2 * spacing
         let itemWidth = floor(neededWidth / Constants.itemCount)
         return CGSize(width: itemWidth, height: itemWidth)
@@ -53,8 +40,6 @@ class PhotosViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
-        self.navigationController?.navigationBar.prefersLargeTitles = false
-        self.navigationItem.title = "Photos Gallery"
         self.view.addSubview(collectionView)
 
         let topCostraint = self.collectionView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 8)
@@ -64,11 +49,23 @@ class PhotosViewController: UIViewController {
 
         NSLayoutConstraint.activate([topCostraint, leftCostraint, rightCostraint, bottomCostraint])
     }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.tabBarController?.tabBar.isHidden = false
+        self.navigationController?.navigationBar.isHidden = false
+        self.navigationController?.navigationBar.prefersLargeTitles = false
+        self.navigationItem.title = "Photo Gallery"
+    }
 }
 
 extension PhotosViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UICollectionViewDelegate {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return items.count
+        return cat.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -78,7 +75,9 @@ extension PhotosViewController: UICollectionViewDataSource, UICollectionViewDele
             return cell
         }
 
-        cell.photoView.image = UIImage(named: items[indexPath.item].imageName)
+        let cat = cat[indexPath.row]
+        let viewModel = PhotosCollectionViewCell.ViewModel(image: cat.imageName)
+        cell.setup(with: viewModel)
         return cell
     }
 
@@ -87,6 +86,30 @@ extension PhotosViewController: UICollectionViewDataSource, UICollectionViewDele
         let spacing = (collectionView.collectionViewLayout as? UICollectionViewFlowLayout)?.minimumInteritemSpacing
 
         return self.itemSize(for: collectionView.frame.width, with: spacing ?? 0)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+
+        let animationPhotosViewController = AnimationPhotosViewController()
+
+        let cat = cat[indexPath.row]
+        let viewModel = AnimationPhotosViewController.ViewModel(image: cat.imageName)
+        animationPhotosViewController.setup(with: viewModel)
+
+        self.view.addSubview(animationPhotosViewController.view)
+        self.addChild(animationPhotosViewController)
+        animationPhotosViewController.view.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            animationPhotosViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            animationPhotosViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            animationPhotosViewController.view.topAnchor.constraint(equalTo: view.topAnchor),
+            animationPhotosViewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+
+        self.tabBarController?.tabBar.isHidden = true
+        self.navigationController?.navigationBar.isHidden = true
+        animationPhotosViewController.didMove(toParent: self)
     }
 }
 

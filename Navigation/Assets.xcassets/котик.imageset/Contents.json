@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "котик2.jpeg",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -13,7 +14,6 @@
       "scale" : "3x"
     },
     {
-      "filename" : "котик.jpeg",
       "idiom" : "iphone",
       "scale" : "1x"
     },

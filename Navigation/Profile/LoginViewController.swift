@@ -7,18 +7,14 @@
 
 import UIKit
 
-class LogInViewController: UIViewController, UITextFieldDelegate {
+class LogInViewController: UIViewController {
+
+    let user = (username: "lena@m.com", password: "qwerty")
 
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         return scrollView
-    }()
-
-    private lazy var contentView: UIView = {
-        let contentView = UIView()
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        return contentView
     }()
 
     private lazy var imageVK: UIImageView = {
@@ -28,16 +24,6 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
         imageView.image = image
         imageView.clipsToBounds = true
         return imageView
-    }()
-
-    private lazy var stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.alignment = .center
-        stackView.distribution = .fillProportionally
-        stackView.spacing = 16
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
     }()
 
     private lazy var textFieldStackView: UIStackView = {
@@ -85,6 +71,15 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
         return textField
     }()
 
+    private lazy var labelText: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 14)
+        label.textColor = .red
+        label.isHidden = true
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
     private lazy var logInButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -94,15 +89,19 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
         button.setTitleColor(.white, for: .normal)
         button.setBackgroundImage(UIImage(named: "blue_pixel"), for: .normal)
      //   button.backgroundColor = UIColor(named: "color")
-        button.backgroundColor = UIColor.white.withAlphaComponent(0.8) // в функции tapLogInButton() есть другой метод через if else, но этот метод лучше, не подтормаживает
+        button.backgroundColor = UIColor.white.withAlphaComponent(0.8)
         button.backgroundColor = .clear
         button.addTarget(self, action: #selector(tapLogInButton), for: .touchUpInside)
         return button
     }()
 
+    private var topButtonConstraint: NSLayoutConstraint?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
+
+        self.labelText.text = ""
 
         setupConstraints()
         setUpObserver()
@@ -117,42 +116,58 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
     private func setupConstraints() {
         self.view.addSubview(scrollView)
         self.scrollView.addSubview(imageVK)
-        self.scrollView.addSubview(stackView)
-        self.stackView.addArrangedSubview(textFieldStackView)
-        self.stackView.addArrangedSubview(logInButton)
+        self.scrollView.addSubview(textFieldStackView)
         self.textFieldStackView.addArrangedSubview(emailTextField)
         self.textFieldStackView.addArrangedSubview(passwordTextField)
+        self.scrollView.addSubview(labelText)
+        self.scrollView.addSubview(logInButton)
 
         let scrollViewTopConstraint = self.scrollView.topAnchor.constraint(equalTo: self.view.topAnchor)
-        let scrollViewRightConstraint = self.scrollView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
-        let scrollViewLeftConstraint = self.scrollView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor)
+        let scrollViewRightConstraint = self.scrollView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -16)
+        let scrollViewLeftConstraint = self.scrollView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 16)
         let scrollViewBottomConstraint = self.scrollView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
-
         let centerXImageConstraint = self.imageVK.centerXAnchor.constraint(equalTo: self.scrollView.centerXAnchor)
-        let bottomImageConstraint = self.imageVK.bottomAnchor.constraint(equalTo: self.stackView.topAnchor, constant: -90)
+        let bottomImageConstraint = self.imageVK.bottomAnchor.constraint(equalTo: self.textFieldStackView.topAnchor, constant: -90)
         let widthImageConstraint = self.imageVK.widthAnchor.constraint(equalToConstant: 100)
         let heightImageConstraint = self.imageVK.heightAnchor.constraint(equalToConstant: 100)
-
-        let stackViewCenterYConstraint = self.stackView.centerYAnchor.constraint(equalTo: self.scrollView.centerYAnchor)
-        let stackViewCenterXConstraint = self.stackView.centerXAnchor.constraint(equalTo: self.scrollView.centerXAnchor)
-        let stackViewLeftConstraint = self.stackView.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor, constant: 16)
-        let stackViewRightConstraint = self.stackView.trailingAnchor.constraint(equalTo: self.scrollView.trailingAnchor, constant: -16)
-
-        NSLayoutConstraint.activate([scrollViewTopConstraint, scrollViewLeftConstraint, scrollViewRightConstraint, scrollViewBottomConstraint, centerXImageConstraint, bottomImageConstraint, widthImageConstraint, heightImageConstraint, stackViewCenterYConstraint, stackViewCenterXConstraint, stackViewLeftConstraint, stackViewRightConstraint])
-
-        let leadingTextFieldStackConstraint = self.textFieldStackView.leftAnchor.constraint(equalTo: self.stackView.leftAnchor)
-        let trailingTextFieldStackConstraint = self.textFieldStackView.rightAnchor.constraint(equalTo: self.stackView.rightAnchor)
+        let centerXTextFieldConstraint = self.textFieldStackView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor)
+        let centerYTextFieldConstraint = self.textFieldStackView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor)
+        let leadingTextFieldStackConstraint = self.textFieldStackView.leftAnchor.constraint(equalTo: self.scrollView.leftAnchor)
+        let trailingTextFieldStackConstraint = self.textFieldStackView.rightAnchor.constraint(equalTo: self.scrollView.rightAnchor)
         let heightTextFieldStackConstraint = self.textFieldStackView.heightAnchor.constraint(equalToConstant: 100)
-
-        let topButtonConstraint = self.logInButton.topAnchor.constraint(equalTo: self.textFieldStackView.bottomAnchor, constant: 16)
-        let leadingButtonConstraint = self.logInButton.leadingAnchor.constraint(equalTo: self.stackView.leadingAnchor)
-        let trailingButtonConstraint = self.logInButton.trailingAnchor.constraint(equalTo: self.stackView.trailingAnchor)
+        self.topButtonConstraint = self.logInButton.topAnchor.constraint(equalTo: self.textFieldStackView.bottomAnchor, constant: 16)
+        self.topButtonConstraint?.priority = UILayoutPriority(rawValue: 999)
+        let leadingButtonConstraint = self.logInButton.leadingAnchor.constraint(equalTo: self.scrollView.leadingAnchor)
+        let trailingButtonConstraint = self.logInButton.trailingAnchor.constraint(equalTo: self.scrollView.trailingAnchor)
         let heightButtonConstraint = self.logInButton.heightAnchor.constraint(equalToConstant: 50)
 
-        NSLayoutConstraint.activate([leadingTextFieldStackConstraint, trailingTextFieldStackConstraint, heightTextFieldStackConstraint, topButtonConstraint, leadingButtonConstraint, trailingButtonConstraint, heightButtonConstraint])
+        NSLayoutConstraint.activate([scrollViewTopConstraint, scrollViewRightConstraint, scrollViewLeftConstraint, scrollViewBottomConstraint, centerXImageConstraint, bottomImageConstraint, widthImageConstraint, heightImageConstraint, centerXTextFieldConstraint, centerYTextFieldConstraint, leadingTextFieldStackConstraint, trailingTextFieldStackConstraint, heightTextFieldStackConstraint, self.topButtonConstraint, leadingButtonConstraint, trailingButtonConstraint, heightButtonConstraint].compactMap({ $0 }))
 
         emailTextField.delegate = self
         passwordTextField.delegate = self
+    }
+
+    @objc func tapLogInButton() {
+
+        let labelTopConstraint = self.labelText.topAnchor.constraint(equalTo: self.textFieldStackView.bottomAnchor)
+        let labelWidthConstraint = self.labelText.widthAnchor.constraint(equalTo: self.textFieldStackView.widthAnchor)
+        let labelHeightConstraint = self.labelText.heightAnchor.constraint(equalToConstant: 20)
+        self.topButtonConstraint = self.logInButton.topAnchor.constraint(equalTo: self.labelText.bottomAnchor, constant: 10)
+
+        if self.labelText.isHidden {
+            self.scrollView.addSubview(labelText)
+            self.topButtonConstraint?.isActive = false
+            NSLayoutConstraint.activate([labelTopConstraint, labelWidthConstraint, labelHeightConstraint, self.topButtonConstraint].compactMap({ $0 }))
+        } else {
+            self.labelText.removeFromSuperview()
+            NSLayoutConstraint.deactivate([labelTopConstraint, labelWidthConstraint, labelTopConstraint])
+        }
+        self.labelText.isHidden.toggle()
+
+        if isEmpty(textField: emailTextField), validateEmail(textField: emailTextField), isEmpty(textField: passwordTextField), validatePassword(textField: passwordTextField) {
+            let profileViewController = ProfileViewController()
+            self.navigationController?.pushViewController(profileViewController, animated: true)
+        }
     }
 
     private func tapGesture() {
@@ -202,27 +217,11 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
 
             let keyboardMinY = self.view.frame.height - keyboarHeight
             if tfMaxY > keyboardMinY {
-                y = tfMaxY - keyboardMinY + 16
+                y = tfMaxY - keyboardMinY + 45
             }
         }
 
         return y
-    }
-
-    @objc func tapLogInButton() {
-
-//        if logInButton.isSelected {
-//            logInButton.alpha = 0.8
-//        } else if logInButton.isHighlighted {
-//            logInButton.alpha = 0.8
-//        } else if logInButton.isEnabled {
-//            logInButton.alpha = 0.8
-//        } else {
-//            logInButton.alpha = 1
-//        }
-        let profileViewController = ProfileViewController()
-        self.navigationController?.pushViewController(profileViewController, animated: true)
-        print("Log")
     }
 }
 
@@ -253,5 +252,45 @@ extension LogInViewController {
         }
 
         return totalTextFields
+    }
+}
+
+extension LogInViewController: UITextFieldDelegate {
+
+    func isEmpty(textField: UITextField) -> Bool {
+        guard textField.text != "" else {
+            textField.shakeTextField()
+            return false
+        }
+        return true
+    }
+
+    func validateEmail(textField: UITextField) -> Bool {
+
+        guard emailTextField.text == user.username else {
+            openAlert(title: "Внимание", message: "Некорректный email", alertStyle: .alert, actionTitles: ["Ok"], actionStyles: [.default], action: [{ _ in
+                print("Ok click")
+            }])
+            return false
+        }
+        return true
+    }
+
+    func validatePassword(textField: UITextField) -> Bool {
+
+        guard passwordTextField.text == user.password else {
+
+            if let text = textField.text, text.count - 1 < 6 {
+                labelText.text = "Введено менее 6 символов"
+            } else if let text = textField.text, text.count > 6 {
+                labelText.text = "Введено более 6 символов"
+            }
+
+            openAlert(title: "Внимание", message: "Некорректный пароль", alertStyle: .alert, actionTitles: ["Ok"], actionStyles: [.default], action: [{ _ in
+                print("Ok click")
+            }])
+            return false
+        }
+        return true
     }
 }
